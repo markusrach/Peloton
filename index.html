@@ -669,29 +669,29 @@ footer em{color:var(--red);font-style:normal}
 
   <!-- Q7 -->
   <div class="q-block">
-    <div class="q-prompt">⚡ Question 7 of 10 — Compare &amp; contrast</div>
-    <div class="q-text">Compare Peloton v. NMPA with the UMG v. TikTok standoff from the previous lecture. What is the most significant structural difference between the two power dynamics?</div>
+    <div class="q-prompt">⚡ Question 7 of 10</div>
+    <div class="q-text">Which single factor gave the publishers the most decisive leverage in this case — more than any other?</div>
     <div class="q-options" id="q7-opts">
       <div class="q-opt" onclick="answer(7,'A',false)" data-id="q7-A">
         <span class="opt-letter">A</span>
-        <span>In the TikTok case, both sides had roughly equal power. In the Peloton case, publishers were slightly stronger.</span>
+        <span>Their financial resources — publishers could sustain lengthy litigation while Peloton could not.</span>
       </div>
       <div class="q-opt" onclick="answer(7,'B',false)" data-id="q7-B">
         <span class="opt-letter">B</span>
-        <span>The cases are fundamentally similar — both involve music publishers extracting value from a platform that underestimated them.</span>
+        <span>Their relationship capital — artists publicly supported the publishers, generating reputational pressure on Peloton.</span>
       </div>
       <div class="q-opt" onclick="answer(7,'C',true)" data-id="q7-C">
         <span class="opt-letter">C</span>
-        <span>In UMG v. TikTok, both sides understood the power balance and engaged in strategic negotiation. In Peloton v. NMPA, Peloton never understood its position — it built a business on an illegal model, ignored the imbalance, and was forced into litigation rather than negotiating proactively.</span>
+        <span>Their legal position — unlicensed use with statutory damages of up to $150,000 per work, combined with evidence that Peloton knew licensing was required, made their case almost unlosable at trial.</span>
       </div>
       <div class="q-opt" onclick="answer(7,'D',false)" data-id="q7-D">
         <span class="opt-letter">D</span>
-        <span>The Peloton case was actually a stronger negotiating position for the platform because fitness content does not depend on specific songs the way TikTok depends on trending music.</span>
+        <span>Their content value — the songs were so irreplaceable that Peloton had no choice but to settle on any terms.</span>
       </div>
     </div>
     <div class="q-reveal" id="q7-reveal">
       <span class="q-result-tag" id="q7-tag"></span>
-      <strong>Awareness of power is itself a form of power.</strong> TikTok understood the dynamic — they simply miscalculated UMG's willingness to walk. Peloton never understood the dynamic at all. They built an entire operating model that violated sync law, scaled it for years, and then tried to litigate their way out instead of negotiating their way in. The lesson: both cases confirm that understanding your power position <em>before</em> you act is the prerequisite for any strategic outcome. Peloton had no strategy — only a lawsuit to respond to.
+      <strong>Legal position was the nuclear lever.</strong> While content value and relationship capital mattered, what made the publishers' position truly unassailable was the law itself. Clear evidence of unlicensed use plus Peloton's own partial licensing (proving wilful knowledge) plus statutory damages at scale meant going to trial risked a judgment far exceeding any settlement figure. The publishers didn't need to negotiate hard — they just needed to be patient. Content value alone could not have produced the same outcome; it was the legal architecture around copyright that transformed it into decisive leverage.
     </div>
   </div>
 
@@ -864,12 +864,12 @@ footer em{color:var(--red);font-style:normal}
 
       <div class="compare-row">
         <div class="compare-card">
-          <h4>vs. UMG / TikTok</h4>
-          <p>UMG understood its leverage and deployed it strategically. Peloton never understood the legal landscape it operated in. Both cases are power stories — but one was strategic theatre; the other was a preventable catastrophe.</p>
-        </div>
-        <div class="compare-card">
           <h4>The $49.3M lesson</h4>
           <p>Proper sync licensing from day one would have cost a fraction of litigation. The "Artist Series" that Peloton eventually launched could have been their opening gambit. Legal compliance was never a cost — it was a delayed competitive asset.</p>
+        </div>
+        <div class="compare-card">
+          <h4>What changed post-settlement</h4>
+          <p>Peloton built a proprietary internal system called Crescendo — allowing instructors to search cleared music by BPM, duration and mood. The crisis forced an infrastructure investment that ultimately made the product better. Compliance unlocked capability.</p>
         </div>
       </div>
 
@@ -882,10 +882,7 @@ footer em{color:var(--red);font-style:normal}
         <li>Post-settlement, the relationship became collaborative and valuable. That value was always available — it just required doing the licensing work first.</li>
       </ul>
 
-      <div style="margin-top:2.5rem;padding:1.5rem;background:var(--red-d);border:1px solid var(--red-b);border-radius:6px">
-        <div class="sec-label" style="margin-bottom:.5rem">Your Assignment 2 Connection</div>
-        <p style="font-size:.9rem;line-height:1.75;color:var(--t2)">For Aurora Pictures: every licensing decision on Film 1 must be analysed through the power framework you have applied here. What is your sync architecture? What rights do you hold vs. what must you clear? What is your BATNA before you enter any platform negotiation? Build leverage before the table — not at it.</p>
-      </div>
+
     </div>
 
     <!-- RESOURCES -->
@@ -1056,13 +1053,13 @@ function showVerdict(){
     desc='You demonstrated a comprehensive understanding of sync licensing architecture, power dynamics, BATNA constraints, and the strategic failures that led to Peloton\'s crisis. You avoided the conceptual traps and showed genuine analytical depth. You are ready to advise on real licensing negotiations.';
   } else if(s>=7){
     col='var(--blue)';title='Strong Understanding';
-    desc='You grasped the core mechanics and avoided most traps. A few analytical nuances — particularly around the brand BATNA constraint and the wilfulness implications of partial licensing — deserve a second look. Solid foundation for Assignment 2.';
+    desc='You grasped the core mechanics and avoided most traps. A few analytical nuances — particularly around the brand BATNA constraint and the wilfulness implications of partial licensing — deserve a second look.';
   } else if(s>=5){
     col='var(--amber)';title='Developing Analyst';
-    desc='You understood the broad narrative but fell into some of the conceptual traps — particularly around partial compliance, the Sherman Act counterclaim, and what BATNA really means for a premium brand. Review the reveal explanations before applying this framework to Aurora Pictures.';
+    desc='You understood the broad narrative but fell into some of the conceptual traps — particularly around partial compliance, the Sherman Act counterclaim, and what BATNA really means for a premium brand. Review the reveal explanations carefully.';
   } else {
     col='var(--red)';title='Back to the Brief';
-    desc='Several core concepts need revisiting: the distinction between sync and performance licenses, the wilfulness doctrine, how brand positioning constrains BATNA, and what statutory damages are designed to do. Revisit Modules 1–3 before attempting Assignment 2.';
+    desc='Several core concepts need revisiting: the distinction between sync and performance licenses, the wilfulness doctrine, how brand positioning constrains BATNA, and what statutory damages are designed to do. Revisit Modules 1–3 before moving on.';
   }
 
   ring.style.border = `3px solid ${col}`;
