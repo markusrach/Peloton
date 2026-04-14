@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CASE FILE #CRI406 — Peloton v. NMPA</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c0c0f;--surf:#131318;--surf2:#1a1a22;--surf3:#22222c;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
+  --red:#e8415a;--red-d:rgba(232,65,90,.14);--red-b:rgba(232,65,90,.3);
+  --amber:#e8a941;--amber-d:rgba(232,169,65,.12);--amber-b:rgba(232,169,65,.3);
+  --green:#3ecf8e;--green-d:rgba(62,207,142,.1);--green-b:rgba(62,207,142,.3);
+  --blue:#4a9eff;--blue-d:rgba(74,158,255,.1);--blue-b:rgba(74,158,255,.3);
+  --text:#f0f0f5;--t2:#8888a8;--t3:#44445a;
+  --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;--serif:'Playfair Display',serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:300;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.025) 3px,rgba(0,0,0,.025) 4px);pointer-events:none;z-index:9999}
+
+/* PROGRESS */
+#prog{position:fixed;top:0;left:0;height:2px;background:var(--red);z-index:1001;transition:width .4s;box-shadow:0 0 8px var(--red)}
+
+/* HEADER */
+header{position:fixed;top:0;left:0;right:0;height:50px;background:rgba(12,12,15,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);z-index:500;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem}
+.h-left{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;color:var(--t3);text-transform:uppercase}
+.h-left em{color:var(--red);font-style:normal}
+.h-right{display:flex;align-items:center;gap:1.2rem}
+.h-score-label{font-family:var(--mono);font-size:.58rem;letter-spacing:.15em;color:var(--t3);text-transform:uppercase}
+.h-score{font-family:var(--mono);font-size:.95rem;font-weight:600;color:var(--amber);min-width:55px;text-align:right}
+.h-modules{display:flex;gap:4px}
+.mod-dot{width:8px;height:8px;border-radius:50%;background:var(--surf3);border:1px solid var(--border2);transition:background .3s}
+.mod-dot.done{background:var(--green)}
+.mod-dot.active{background:var(--amber)}
+
+/* MAIN */
+main{padding-top:50px}
+
+/* ─── HERO ─── */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:5rem 2rem;position:relative;overflow:hidden}
+.hero-glow{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 35%,rgba(232,65,90,.07) 0%,transparent 70%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:55px 55px}
+.stamp{position:absolute;top:14%;right:7%;border:2px solid rgba(232,65,90,.5);color:rgba(232,65,90,.5);font-family:var(--mono);font-size:.65rem;font-weight:600;letter-spacing:.3em;padding:.5em .9em;transform:rotate(7deg);text-transform:uppercase;pointer-events:none}
+.hero-c{position:relative;z-index:1;max-width:820px}
+.file-tag{display:inline-block;font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;color:var(--red);border:1px solid var(--red-b);background:var(--red-d);padding:.3em .9em;border-radius:2px;margin-bottom:1.8rem;text-transform:uppercase}
+.hero h1{font-family:var(--serif);font-size:clamp(2.8rem,7vw,6.2rem);font-weight:900;line-height:.93;letter-spacing:-.02em;margin-bottom:.5rem}
+.hero h1 em{font-style:italic;color:var(--red)}
+.hero-sub{font-family:var(--mono);font-size:.68rem;letter-spacing:.15em;color:var(--t3);margin-bottom:2rem;text-transform:uppercase}
+.hero-brief{font-size:.98rem;line-height:1.75;color:var(--t2);max-width:560px;margin:0 auto 2.5rem}
+.stats{display:flex;gap:2.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:3rem}
+.stat .n{font-family:var(--serif);font-size:2.2rem;font-weight:700;color:var(--red);display:block;line-height:1}
+.stat .l{font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;color:var(--t3);margin-top:.3em;display:block;text-transform:uppercase}
+.start-btn{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;color:var(--text);background:var(--red);border:none;padding:.9em 2.4em;border-radius:2px;cursor:pointer;text-transform:uppercase;transition:opacity .2s;margin-top:.5rem}
+.start-btn:hover{opacity:.85}
+.cta-hint{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;color:var(--t3);margin-top:1rem;text-transform:uppercase}
+
+/* ─── SECTION WRAPPER ─── */
+.module{max-width:900px;margin:0 auto;padding:5rem 2rem;display:none}
+.module.unlocked{display:block}
+.module-lock{max-width:900px;margin:0 auto;padding:3rem 2rem;display:none;text-align:center}
+.module-lock.show-lock{display:block}
+.lock-msg{font-family:var(--mono);font-size:.7rem;letter-spacing:.15em;color:var(--t3);text-transform:uppercase;border:1px solid var(--border2);display:inline-block;padding:.7em 1.5em;border-radius:2px}
+
+.sec-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.22em;color:var(--red);text-transform:uppercase;margin-bottom:.8rem}
+.sec-title{font-family:var(--serif);font-size:clamp(1.8rem,4vw,3rem);font-weight:700;line-height:1.05;margin-bottom:1.2rem}
+.sec-title em{font-style:italic;color:var(--red)}
+.sec-intro{font-size:.96rem;line-height:1.8;color:var(--t2);max-width:680px;margin-bottom:2.5rem}
+
+/* ─── DIVIDER ─── */
+.div{border:none;border-top:1px solid var(--border);margin:0}
+
+/* ─── TIMELINE ─── */
+.timeline{position:relative;padding-left:1.5rem}
+.timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,var(--red),rgba(232,65,90,.2))}
+.tl-item{position:relative;padding:0 0 2.5rem 2rem}
+.tl-dot{position:absolute;left:-1.5rem;top:.3rem;width:9px;height:9px;background:var(--red);border-radius:50%;box-shadow:0 0 10px var(--red)}
+.tl-date{font-family:var(--mono);font-size:.65rem;color:var(--red);letter-spacing:.1em;margin-bottom:.4rem;text-transform:uppercase}
+.tl-title{font-size:.98rem;font-weight:600;margin-bottom:.4rem}
+.tl-body{font-size:.87rem;line-height:1.72;color:var(--t2)}
+.badge{display:inline-block;font-family:var(--mono);font-size:.7rem;font-weight:500;padding:.2em .65em;border-radius:2px;margin-left:.4em;vertical-align:middle}
+.badge-red{background:var(--red-d);color:var(--red);border:1px solid var(--red-b)}
+.badge-amber{background:var(--amber-d);color:var(--amber);border:1px solid var(--amber-b)}
+.badge-green{background:var(--green-d);color:var(--green);border:1px solid var(--green-b)}
+.badge-blue{background:var(--blue-d);color:var(--blue);border:1px solid var(--blue-b)}
+
+/* ─── INFO CARDS ─── */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;margin:1.5rem 0}
+.card{background:var(--surf);border:1px solid var(--border);border-radius:6px;padding:1.6rem;transition:border-color .3s}
+.card:hover{border-color:var(--border2)}
+.card-icon{font-size:1.4rem;margin-bottom:.9rem}
+.card h3{font-family:var(--serif);font-size:1.05rem;font-weight:700;margin-bottom:.5rem}
+.card p{font-size:.85rem;line-height:1.72;color:var(--t2)}
+.pullquote{border-left:2px solid var(--red);padding:1rem 1.4rem;margin:2rem 0;background:var(--red-d);border-radius:0 4px 4px 0;font-style:italic;font-size:.95rem;color:var(--t2);line-height:1.7}
+.pullquote cite{display:block;font-style:normal;font-size:.72rem;color:var(--t3);margin-top:.5rem;letter-spacing:.06em}
+
+/* ─── TRAP QUESTIONS ─── */
+.q-block{margin:2rem 0}
+.q-prompt{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;color:var(--amber);text-transform:uppercase;margin-bottom:.6rem}
+.q-text{font-size:1.02rem;font-weight:500;line-height:1.55;margin-bottom:1.2rem;color:var(--text)}
+.q-options{display:grid;gap:.7rem}
+.q-opt{background:var(--surf2);border:1px solid var(--border);border-radius:4px;padding:.9rem 1.2rem;cursor:pointer;font-size:.88rem;line-height:1.5;color:var(--t2);transition:all .25s;display:flex;gap:.9rem;align-items:flex-start}
+.q-opt:hover:not(.disabled){border-color:var(--border2);color:var(--text);background:var(--surf3)}
+.q-opt .opt-letter{font-family:var(--mono);font-size:.7rem;color:var(--t3);flex-shrink:0;margin-top:.1em;min-width:1.2rem}
+.q-opt.correct{border-color:var(--green-b);background:var(--green-d);color:var(--text)}
+.q-opt.correct .opt-letter{color:var(--green)}
+.q-opt.wrong{border-color:var(--red-b);background:var(--red-d);color:var(--t2)}
+.q-opt.wrong .opt-letter{color:var(--red)}
+.q-opt.disabled{cursor:default;pointer-events:none}
+.q-reveal{display:none;margin-top:1.2rem;padding:1.2rem 1.4rem;background:var(--surf2);border:1px solid var(--border);border-radius:4px;font-size:.87rem;line-height:1.75;color:var(--t2)}
+.q-reveal.show{display:block;animation:fadeUp .3s ease}
+.q-reveal strong{color:var(--text)}
+.q-result-tag{font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;font-weight:600;margin-bottom:.7rem;display:block;text-transform:uppercase}
+.tag-correct{color:var(--green)}
+.tag-wrong{color:var(--red)}
+
+/* ─── POWER ANALYSIS ─── */
+.power-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin:2rem 0}
+@media(max-width:680px){.power-grid{grid-template-columns:1fr}}
+.power-side{background:var(--surf);border:1px solid var(--border);border-radius:6px;padding:1.8rem}
+.power-side h3{font-family:var(--serif);font-size:1.1rem;font-weight:700;margin-bottom:1.4rem;display:flex;align-items:center;gap:.5rem}
+.pbar{margin-bottom:1.1rem}
+.pbar-label{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.68rem;color:var(--t2);margin-bottom:.35rem;letter-spacing:.04em}
+.pbar-label span:last-child{color:var(--red)}
+.pbar-track{height:5px;background:var(--surf3);border-radius:99px;overflow:hidden}
+.pbar-fill{height:100%;border-radius:99px;transition:width 1.4s cubic-bezier(.4,0,.2,1);width:0}
+.fill-r{background:linear-gradient(90deg,var(--red),rgba(232,65,90,.5))}
+.fill-g{background:linear-gradient(90deg,var(--green),rgba(62,207,142,.5))}
+.fill-a{background:linear-gradient(90deg,var(--amber),rgba(232,169,65,.5))}
+.fill-b{background:linear-gradient(90deg,var(--blue),rgba(74,158,255,.5))}
+
+/* ─── ZOPA DIAGRAM ─── */
+.zopa-wrap{background:var(--surf);border:1px solid var(--border);border-radius:6px;padding:2.5rem 2rem;margin:2rem 0}
+.zopa-title{font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;color:var(--t3);text-transform:uppercase;margin-bottom:1.8rem;text-align:center}
+.zopa-scale{position:relative;height:80px;margin:0 60px 1.4rem}
+.zopa-base{position:absolute;bottom:28px;left:0;right:0;height:6px;background:var(--surf3);border-radius:99px}
+.zopa-zone{position:absolute;bottom:28px;height:6px;background:var(--green);border-radius:99px;opacity:.7}
+.zopa-pub-floor{position:absolute;bottom:0}
+.zopa-pub-ceil{position:absolute;bottom:0}
+.zopa-pel-floor{position:absolute;top:0}
+.zopa-pel-ceil{position:absolute;top:0}
+.zopa-marker{position:absolute;bottom:20px;width:1px;background:var(--t3);height:16px}
+.zopa-marker-label{position:absolute;bottom:0;font-family:var(--mono);font-size:.6rem;color:var(--t3);white-space:nowrap;transform:translateX(-50%)}
+.zopa-party-label{font-family:var(--mono);font-size:.62rem;color:var(--t2);letter-spacing:.08em;text-align:center;margin-top:.3rem}
+.zopa-legend{display:flex;justify-content:center;gap:2rem;margin-top:1rem}
+.zl-item{display:flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.62rem;color:var(--t3);letter-spacing:.08em;text-transform:uppercase}
+.zl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* ─── RESOURCES ─── */
+.res-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin:1.5rem 0}
+.res-card{background:var(--surf);border:1px solid var(--border);border-radius:6px;padding:1.4rem;display:flex;gap:1rem;align-items:flex-start;text-decoration:none;color:inherit;transition:all .25s}
+.res-card:hover{border-color:var(--border2);background:var(--surf2);transform:translateY(-2px)}
+.res-type{font-family:var(--mono);font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;padding:.25em .65em;border-radius:2px;white-space:nowrap;flex-shrink:0;margin-top:.1em}
+.rt-legal{background:var(--red-d);color:var(--red);border:1px solid var(--red-b)}
+.rt-media{background:var(--amber-d);color:var(--amber);border:1px solid var(--amber-b)}
+.rt-academic{background:var(--blue-d);color:var(--blue);border:1px solid var(--blue-b)}
+.rt-video{background:var(--green-d);color:var(--green);border:1px solid var(--green-b)}
+.res-info h4{font-size:.88rem;font-weight:600;margin-bottom:.3rem;color:var(--text);line-height:1.4}
+.res-info p{font-size:.78rem;color:var(--t2);line-height:1.6}
+
+/* ─── UNLOCK BUTTON ─── */
+.unlock-btn{font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;color:var(--bg);background:var(--green);border:none;padding:.85em 2em;border-radius:2px;cursor:pointer;text-transform:uppercase;transition:opacity .2s;margin-top:2rem;display:block}
+.unlock-btn:hover{opacity:.85}
+.unlock-btn:disabled{opacity:.3;cursor:not-allowed;background:var(--t3)}
+
+/* ─── VERDICT ─── */
+.verdict-box{background:var(--surf);border:1px solid var(--border);border-radius:8px;padding:3rem;margin-top:2rem;text-align:center}
+.verdict-score-ring{width:140px;height:140px;border-radius:50%;margin:0 auto 2rem;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+.verdict-score-num{font-family:var(--serif);font-size:3rem;font-weight:900;line-height:1}
+.verdict-score-max{font-family:var(--mono);font-size:.65rem;color:var(--t3);letter-spacing:.12em;margin-top:.2rem}
+.verdict-title{font-family:var(--serif);font-size:2rem;font-weight:700;margin-bottom:.8rem}
+.verdict-desc{font-size:.95rem;line-height:1.8;color:var(--t2);max-width:580px;margin:0 auto 2rem}
+.breakdown-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin:2rem 0}
+.breakdown-item{background:var(--surf2);border:1px solid var(--border);border-radius:4px;padding:1rem;text-align:center}
+.breakdown-item .bi-n{font-family:var(--serif);font-size:1.5rem;font-weight:700;display:block;line-height:1;margin-bottom:.3rem}
+.breakdown-item .bi-l{font-family:var(--mono);font-size:.6rem;color:var(--t3);letter-spacing:.1em;text-transform:uppercase}
+.learning-list{text-align:left;list-style:none;display:grid;gap:.8rem;margin:2rem 0}
+.learning-list li{display:flex;gap:.9rem;align-items:flex-start;font-size:.9rem;line-height:1.65;color:var(--t2)}
+.learning-list li::before{content:'→';color:var(--red);font-weight:700;flex-shrink:0;margin-top:.05em}
+.compare-row{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin:2rem 0}
+@media(max-width:600px){.compare-row{grid-template-columns:1fr}}
+.compare-card{background:var(--surf2);border:1px solid var(--border);border-radius:4px;padding:1.4rem}
+.compare-card h4{font-family:var(--mono);font-size:.65rem;letter-spacing:.15em;color:var(--t3);text-transform:uppercase;margin-bottom:.8rem}
+.compare-card p{font-size:.85rem;line-height:1.7;color:var(--t2)}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeUp .5s ease both}
+
+/* ─── CHIPS ─── */
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0}
+.chip{font-family:var(--mono);font-size:.65rem;padding:.3em .8em;border-radius:99px;border:1px solid;font-weight:500}
+.chip-r{color:var(--red);border-color:var(--red-b);background:var(--red-d)}
+.chip-a{color:var(--amber);border-color:var(--amber-b);background:var(--amber-d)}
+.chip-g{color:var(--green);border-color:var(--green-b);background:var(--green-d)}
+.chip-b{color:var(--blue);border-color:var(--blue-b);background:var(--blue-d)}
+
+/* ─── TWO-COL ─── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+@media(max-width:620px){.two-col{grid-template-columns:1fr}}
+.info-box{background:var(--surf);border:1px solid var(--border);border-radius:6px;padding:1.6rem}
+.info-box h4{font-size:.9rem;font-weight:600;margin-bottom:.7rem;display:flex;align-items:center;gap:.4rem}
+.info-box p{font-size:.85rem;line-height:1.72;color:var(--t2)}
+.info-box ul{list-style:none;margin-top:.6rem}
+.info-box ul li{font-size:.85rem;line-height:1.7;color:var(--t2);padding-left:1.2rem;position:relative}
+.info-box ul li::before{content:'·';color:var(--red);position:absolute;left:0}
+
+/* ─── FOOTER ─── */
+footer{border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center;color:var(--t3);font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase}
+footer em{color:var(--red);font-style:normal}
+
+/* mobile tweaks */
+@media(max-width:500px){
+  .stats{gap:1.5rem}
+  .stat .n{font-size:1.8rem}
+  .module,.module-lock{padding:3.5rem 1.2rem}
+}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<header>
+  <div class="h-left"><em>CRI406</em> &nbsp;·&nbsp; CASE FILE #2025-PELOTON</div>
+  <div class="h-right">
+    <div class="h-modules" id="mod-dots">
+      <div class="mod-dot" title="Overview"></div>
+      <div class="mod-dot" title="Timeline"></div>
+      <div class="mod-dot" title="Licensing"></div>
+      <div class="mod-dot" title="Power"></div>
+      <div class="mod-dot" title="BATNA/ZOPA"></div>
+      <div class="mod-dot" title="Verdict"></div>
+    </div>
+    <div class="h-score-label">Score</div>
+    <div class="h-score" id="score-display">0 / 10</div>
+  </div>
+</header>
+
+<main>
+
+<!-- ══════ HERO ══════ -->
+<section class="hero" id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-grid"></div>
+  <div class="stamp">CONFIDENTIAL</div>
+  <div class="hero-c fade-in">
+    <div class="file-tag">Case File · CRI406 · Licensing &amp; Power</div>
+    <h1>Peloton<br><em>vs.</em> The<br>Music Industry</h1>
+    <div class="hero-sub">Downtown Music Publishing v. Peloton Interactive · S.D.N.Y. 2019–2020</div>
+    <p class="hero-brief">You are the analyst. A $300 million copyright crisis is on your desk. Work through the evidence, navigate the traps, and deliver your verdict. Your understanding will be scored.</p>
+    <div class="stats">
+      <div class="stat"><span class="n">$300M</span><span class="l">Damages claimed</span></div>
+      <div class="stat"><span class="n">2,468</span><span class="l">Songs infringed</span></div>
+      <div class="stat"><span class="n">$49.3M</span><span class="l">Settlement costs</span></div>
+      <div class="stat"><span class="n">14</span><span class="l">Publishers suing</span></div>
+    </div>
+    <button class="start-btn" onclick="unlockModule(1)">Open Case File →</button>
+    <div class="cta-hint">6 modules · 10 scored questions · sequential unlock</div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- ══════ MODULE 1: OVERVIEW ══════ -->
+<div class="module-lock" id="lock-1"><div class="lock-msg">⬛ Module 1 locked — open the case file above to begin</div></div>
+
+<section class="module" id="mod-1">
+  <div class="sec-label">Module 01 — Scene of the Crime</div>
+  <h2 class="sec-title">What <em>actually</em> happened?</h2>
+  <p class="sec-intro">Before you analyse anything, you need the facts. Read the case outline carefully — the details matter, and there are traps ahead that depend on you reading closely.</p>
+
+  <!-- PELOTON EXPLAINER -->
+  <div style="margin-bottom:2.5rem">
+    <div class="sec-label" style="margin-bottom:.8rem">First — what is Peloton?</div>
+    <div class="two-col" style="margin-bottom:1.5rem">
+      <div class="info-box">
+        <h4>🚴 The Company</h4>
+        <p>Peloton is an American fitness technology company founded in 2012. They sell premium connected exercise bikes and treadmills ($1,500–$2,500+) with built-in screens that stream live and on-demand instructor-led workout classes. Think of it as a spin class you take at home, taught by a real instructor, with real music — all subscribed monthly. At its peak, Peloton had over 5 million members and was valued at $50 billion.</p>
+      </div>
+      <div class="info-box">
+        <h4>🎵 Why Music Matters to Peloton</h4>
+        <p>Peloton's instructors build classes around specific songs — the music is the experience, not background noise. Peloton's own marketing stated consumers rank music as <em>"one of the top aspects of the brand."</em> Instructors chose tracks spontaneously, in real time, to match workout intensity. This made the product feel alive — and made the licensing problem nearly impossible to solve operationally.</p>
+      </div>
+    </div>
+    <div class="card-grid" style="margin-top:0">
+
+      <!-- WATCH CARD 1 -->
+      <a href="https://www.cnbc.com/video/2019/02/08/how-peloton-became-a-multibillion-dollar-company-with-a-cult-following.html" target="_blank" style="text-decoration:none">
+        <div style="background:var(--surf);border:1px solid var(--border);border-radius:6px;overflow:hidden;transition:border-color .25s;cursor:pointer" onmouseover="this.style.borderColor='rgba(232,65,90,.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,.07)'">
+          <div style="background:linear-gradient(135deg,#1a1a22 0%,#0c0c0f 100%);height:120px;display:flex;align-items:center;justify-content:center;position:relative;border-bottom:1px solid var(--border)">
+            <div style="width:52px;height:52px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(232,65,90,.4)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="8,5 19,12 8,19"/></svg>
+            </div>
+            <div style="position:absolute;top:.6rem;right:.7rem;font-family:var(--mono);font-size:.55rem;color:var(--t3);letter-spacing:.1em;text-transform:uppercase">CNBC</div>
+          </div>
+          <div style="padding:1rem 1.1rem">
+            <div style="font-family:var(--mono);font-size:.58rem;color:var(--red);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.4rem">Watch · What is Peloton?</div>
+            <div style="font-size:.88rem;font-weight:500;color:var(--text);line-height:1.4;margin-bottom:.4rem">How Peloton Became a $4 Billion Cult Company</div>
+            <div style="font-size:.78rem;color:var(--t2);line-height:1.6">CNBC explains the business model, the premium positioning, and why music was central to the Peloton experience — essential context before the case analysis.</div>
+            <div style="margin-top:.8rem;font-family:var(--mono);font-size:.6rem;color:var(--t3);letter-spacing:.08em">cnbc.com · opens in new tab ↗</div>
+          </div>
+        </div>
+      </a>
+
+      <!-- WATCH CARD 2 -->
+      <a href="https://www.cbsnews.com/news/peloton-lawsuit-fitness-company-sued-for-stealing-music/" target="_blank" style="text-decoration:none">
+        <div style="background:var(--surf);border:1px solid var(--border);border-radius:6px;overflow:hidden;transition:border-color .25s;cursor:pointer" onmouseover="this.style.borderColor='rgba(232,65,90,.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,.07)'">
+          <div style="background:linear-gradient(135deg,#1a1a22 0%,#0c0c0f 100%);height:120px;display:flex;align-items:center;justify-content:center;position:relative;border-bottom:1px solid var(--border)">
+            <div style="width:52px;height:52px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(232,65,90,.4)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="8,5 19,12 8,19"/></svg>
+            </div>
+            <div style="position:absolute;top:.6rem;right:.7rem;font-family:var(--mono);font-size:.55rem;color:var(--t3);letter-spacing:.1em;text-transform:uppercase">CBS NEWS</div>
+          </div>
+          <div style="padding:1rem 1.1rem">
+            <div style="font-family:var(--mono);font-size:.58rem;color:var(--red);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.4rem">Watch · The Lawsuit Breaks</div>
+            <div style="font-size:.88rem;font-weight:500;color:var(--text);line-height:1.4;margin-bottom:.4rem">Peloton Sued for $150M Over Unlicensed Music</div>
+            <div style="font-size:.78rem;color:var(--t2);line-height:1.6">CBS News coverage of the March 2019 lawsuit filing, including video report. Covers the claims, the artists involved, and Peloton's initial response.</div>
+            <div style="margin-top:.8rem;font-family:var(--mono);font-size:.6rem;color:var(--t3);letter-spacing:.08em">cbsnews.com · opens in new tab ↗</div>
+          </div>
+        </div>
+      </a>
+
+      <!-- WATCH CARD 3 -->
+      <a href="https://www.cbsnews.com/news/peloton-music-lawsuit-removing-unlicensed-songs/" target="_blank" style="text-decoration:none">
+        <div style="background:var(--surf);border:1px solid var(--border);border-radius:6px;overflow:hidden;transition:border-color .25s;cursor:pointer" onmouseover="this.style.borderColor='rgba(232,65,90,.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,.07)'">
+          <div style="background:linear-gradient(135deg,#1a1a22 0%,#0c0c0f 100%);height:120px;display:flex;align-items:center;justify-content:center;position:relative;border-bottom:1px solid var(--border)">
+            <div style="width:52px;height:52px;background:var(--amber);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(232,169,65,.4)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="8,5 19,12 8,19"/></svg>
+            </div>
+            <div style="position:absolute;top:.6rem;right:.7rem;font-family:var(--mono);font-size:.55rem;color:var(--t3);letter-spacing:.1em;text-transform:uppercase">CBS NEWS</div>
+          </div>
+          <div style="padding:1rem 1.1rem">
+            <div style="font-family:var(--mono);font-size:.58rem;color:var(--amber);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.4rem">Watch · The Fallout</div>
+            <div style="font-size:.88rem;font-weight:500;color:var(--text);line-height:1.4;margin-bottom:.4rem">Peloton Removes Thousands of Classes After Lawsuit</div>
+            <div style="font-size:.78rem;color:var(--t2);line-height:1.6">Follow-up CBS coverage: Peloton strips 65% of its on-demand library after the lawsuit. User reaction, CEO John Foley's statement, and the real cost to the brand.</div>
+            <div style="margin-top:.8rem;font-family:var(--mono);font-size:.6rem;color:var(--t3);letter-spacing:.08em">cbsnews.com · opens in new tab ↗</div>
+          </div>
+        </div>
+      </a>
+
+    </div>
+    <p style="font-family:var(--mono);font-size:.6rem;color:var(--t3);margin-top:.7rem;letter-spacing:.08em">▲ All three links open original news sources with embedded video reports. Click any card to watch.</p>
+  </div>
+
+  <div class="chips">
+    <span class="chip chip-r">Sync Licensing</span>
+    <span class="chip chip-a">Copyright Infringement</span>
+    <span class="chip chip-g">NMPA · 14 Publishers</span>
+    <span class="chip chip-b">S.D.N.Y. 2019–2020</span>
+  </div>
+
+  <div class="two-col" style="margin-top:1.8rem">
+    <div class="info-box">
+      <h4>🚴 Peloton</h4>
+      <p>Peloton sold premium connected fitness bikes at $2,000+. Instructors curated live playlists featuring Rihanna, Justin Timberlake, Bruno Mars, Lady Gaga, Katy Perry. Their own marketing stated: <em>"consumers rank music as one of the top aspects of the brand."</em> They had obtained <strong>some</strong> sync licenses — but left thousands of songs uncleared.</p>
+    </div>
+    <div class="info-box">
+      <h4>🎵 The Publishers (NMPA)</h4>
+      <p>Fourteen music publishers, coordinated through the NMPA, sued in March 2019 for <strong>$150M</strong>. After discovery revealed deeper infringement, the claim expanded to <strong>2,468 songs and $300M</strong>. Statutory damages: up to $150,000 per <em>willfully</em> infringed work — no need to prove actual losses.</p>
+    </div>
+  </div>
+
+  <div class="pullquote">
+    "Unlike performance licenses — available through blanket deals with ASCAP, BMI, or SESAC — sync rights are controlled by individual publishers with no centralised clearinghouse. Each publisher sets its own terms and can refuse to license. Only 2% of songs in the lawsuit were owned by a single publisher."
+    <cite>— Core structural issue in the case</cite>
+  </div>
+
+  <div class="info-box" style="margin-top:1.2rem">
+    <h4>⚖️ Peloton Countersues — The Sherman Act Gambit</h4>
+    <p>Peloton filed antitrust counterclaims under the Sherman Act (1890), alleging a "hub-and-spoke conspiracy": that the NMPA coordinated publishers to collectively refuse individual negotiations and force Peloton into a single high-priced deal. <strong>Judge Denise Cote dismissed all counterclaims.</strong> The Noerr-Pennington doctrine protected pre-litigation coordination; Peloton also failed to define a proper relevant market.</p>
+  </div>
+
+  <!-- TRAP Q1 -->
+  <div class="q-block" style="margin-top:2.5rem">
+    <div class="q-prompt">⚡ Question 1 of 10 — Read carefully</div>
+    <div class="q-text">Peloton had obtained sync licenses for some songs before the lawsuit. What does this tell us about their liability for the remaining unlicensed songs?</div>
+    <div class="q-options" id="q1-opts">
+      <div class="q-opt" onclick="answer(1,'A',false)" data-id="q1-A">
+        <span class="opt-letter">A</span>
+        <span>It significantly reduces their liability — partial compliance shows good faith effort.</span>
+      </div>
+      <div class="q-opt" onclick="answer(1,'B',true)" data-id="q1-B">
+        <span class="opt-letter">B</span>
+        <span>It potentially <em>increases</em> liability — having some licenses proves they understood the requirement, making unlicensed use more likely to be deemed wilful.</span>
+      </div>
+      <div class="q-opt" onclick="answer(1,'C',false)" data-id="q1-C">
+        <span class="opt-letter">C</span>
+        <span>It has no bearing — copyright liability is the same regardless of intent or knowledge.</span>
+      </div>
+      <div class="q-opt" onclick="answer(1,'D',false)" data-id="q1-D">
+        <span class="opt-letter">D</span>
+        <span>It means they are only liable for the difference in licensing fees, not statutory damages.</span>
+      </div>
+    </div>
+    <div class="q-reveal" id="q1-reveal">
+      <span class="q-result-tag" id="q1-tag"></span>
+      <strong>The trap:</strong> Many students assume partial compliance = reduced exposure. The opposite is true. US copyright law awards <em>enhanced statutory damages</em> for wilful infringement — up to $150,000 per work vs. $750 minimum. By obtaining some sync licenses, Peloton demonstrated they knew sync clearance was required. Using thousands of other songs without clearance is therefore <strong>wilful</strong> by definition, maximising their exposure.
+    </div>
+  </div>
+
+  <!-- TRAP Q2 -->
+  <div class="q-block">
+    <div class="q-prompt">⚡ Question 2 of 10</div>
+    <div class="q-text">Peloton's Sherman Act counterclaim alleged a "hub-and-spoke conspiracy." How should we assess this strategic move?</div>
+    <div class="q-options" id="q2-opts">
+      <div class="q-opt" onclick="answer(2,'A',false)" data-id="q2-A">
+        <span class="opt-letter">A</span>
+        <span>A smart and bold legal manoeuvre — it forced publishers to justify their collective negotiating structure.</span>
+      </div>
+      <div class="q-opt" onclick="answer(2,'B',false)" data-id="q2-B">
+        <span class="opt-letter">B</span>
+        <span>Legally valid but ultimately settled before a ruling could confirm it.</span>
+      </div>
+      <div class="q-opt" onclick="answer(2,'C',true)" data-id="q2-C">
+        <span class="opt-letter">C</span>
+        <span>A costly strategic mistake — it failed on two independent legal grounds, extended litigation, added reputational damage, and distracted from a faster settlement.</span>
+      </div>
+      <div class="q-opt" onclick="answer(2,'D',false)" data-id="q2-D">
+        <span class="opt-letter">D</span>
+        <span>Irrelevant to the outcome — antitrust claims never affect copyright disputes.</span>
+      </div>
+    </div>
+    <div class="q-reveal" id="q2-reveal">
+      <span class="q-result-tag" id="q2-tag"></span>
+      <strong>The trap:</strong> The bold legal move looks clever on paper. In reality, Judge Cote dismissed it entirely on two separate grounds: (1) Noerr-Pennington doctrine shields pre-litigation coordination; (2) Peloton couldn't define its "relevant market" correctly. The counterclaim prolonged proceedings, generated more negative press, and consumed legal fees — all while the core infringement liability was never in serious doubt. <strong>Bold ≠ smart</strong> when your core position is losing.
+    </div>
+  </div>
+
+  <button class="unlock-btn" id="unlock-2" onclick="unlockModule(2)" disabled>Complete questions above to continue →</button>
+</section>
+
+<hr class="div">
+
+<!-- ══════ MODULE 2: TIMELINE ══════ -->
+<div class="module-lock" id="lock-2"><div class="lock-msg">⬛ Module 2 locked — complete Module 1 to continue</div></div>
+
+<section class="module" id="mod-2">
+  <div class="sec-label">Module 02 — Case Timeline</div>
+  <h2 class="sec-title">The <em>sequence</em> of events</h2>
+  <p class="sec-intro">A licensing crisis rarely arrives overnight. Trace how this unfolded from the first lawsuit to the post-settlement era.</p>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">March 2019</div>
+      <div class="tl-title">Lawsuit Filed <span class="badge badge-red">$150M</span></div>
+      <div class="tl-body">Fourteen music publishers, coordinated through the NMPA, file suit in the Southern District of New York. They allege Peloton used approximately 1,000 copyrighted songs in streamed fitness classes without synchronisation licenses. Case: <em>Downtown Music Publishing v. Peloton Interactive</em>, 1:19-cv-02426.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">September 2019</div>
+      <div class="tl-title">Claim Expands <span class="badge badge-red">$300M</span></div>
+      <div class="tl-body">Discovery reveals the infringement was far deeper than originally alleged. The claim expands to 2,468 songs and $300M in damages. Statutory damages at $150,000 per wilfully infringed work create maximum theoretical exposure of over $370M. Peloton files its Sherman Act antitrust counterclaims.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">Late 2019</div>
+      <div class="tl-title">Counterclaims Dismissed</div>
+      <div class="tl-body">Judge Denise Cote dismisses all of Peloton's antitrust counterclaims. The Noerr-Pennington doctrine protects the publishers' pre-litigation coordination. Peloton's market definition also fails scrutiny. Peloton's only legal counterattack is gone.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">February 2020</div>
+      <div class="tl-title">Settlement <span class="badge badge-amber">Confidential terms</span></div>
+      <div class="tl-body">The parties settle on confidential terms — no public dollar figure. However, Peloton's earnings report that quarter reveals $49.3M in litigation and settlement costs. A joint collaboration agreement for future licensing is also established.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">Post-Settlement</div>
+      <div class="tl-title">Artist Series Era <span class="badge badge-green">Transformation</span></div>
+      <div class="tl-body">With proper sync licenses now in place, Peloton launches premium "Artist Series" classes featuring Beyoncé, The Beatles, Ed Sheeran, and others. The lawsuit that almost destroyed its music programme becomes the foundation of its most premium content offering — and a price discrimination strategy.</div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="q-block">
+    <div class="q-prompt">⚡ Question 3 of 10</div>
+    <div class="q-text">The settlement amount was never publicly confirmed, but Peloton reported $49.3M in "litigation and settlement costs." Which of the following is the most analytically accurate statement about this figure?</div>
+    <div class="q-options" id="q3-opts">
+      <div class="q-opt" onclick="answer(3,'A',false)" data-id="q3-A">
+        <span class="opt-letter">A</span>
+        <span>$49.3M proves the publishers accepted a low settlement far below their $300M claim, suggesting the claim was inflated from the start.</span>
+      </div>
+      <div class="q-opt" onclick="answer(3,'B',true)" data-id="q3-B">
+        <span class="opt-letter">B</span>
+        <span>$49.3M likely includes legal fees and settlement payment combined — the actual settlement payout is unknown, and $49.3M may still fall within the ZOPA's lower range plus costs.</span>
+      </div>
+      <div class="q-opt" onclick="answer(3,'C',false)" data-id="q3-C">
+        <span class="opt-letter">C</span>
+        <span>$49.3M is exactly what Peloton paid the publishers — earnings reports always separate legal fees.</span>
+      </div>
+      <div class="q-opt" onclick="answer(3,'D',false)" data-id="q3-D">
+        <span class="opt-letter">D</span>
+        <span>The figure is irrelevant since the settlement was confidential.</span>
+      </div>
+    </div>
+    <div class="q-reveal" id="q3-reveal">
+      <span class="q-result-tag" id="q3-tag"></span>
+      <strong>Precision matters in case analysis.</strong> Earnings reports typically aggregate litigation-related expenses — legal fees, settlement payments, related costs — under a single line. Separating what went to publishers vs. lawyers is impossible from public data alone. The $49.3M figure is a floor indicator and a signalling device, not a confirmed settlement number. Analysts who treat it as a confirmed payment are reading more certainty into the data than it contains.
+    </div>
+  </div>
+
+  <button class="unlock-btn" id="unlock-3" onclick="unlockModule(3)" disabled>Continue to Licensing Architecture →</button>
+</section>
+
+<hr class="div">
+
+<!-- ══════ MODULE 3: LICENSING ══════ -->
+<div class="module-lock" id="lock-3"><div class="lock-msg">⬛ Module 3 locked — complete Module 2 first</div></div>
+
+<section class="module" id="mod-3">
+  <div class="sec-label">Module 03 — The Licensing Maze</div>
+  <h2 class="sec-title">Why was this so <em>complicated</em>?</h2>
+  <p class="sec-intro">Understanding why Peloton couldn't just "buy a music license" requires understanding how music rights are actually structured. This is the architecture that made the crisis possible.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🎤</div>
+      <h3>Performance License</h3>
+      <p>Covers playing music publicly — radio, venues, streaming audio. Available through <strong>blanket deals</strong> with ASCAP, BMI, or SESAC. One payment covers millions of songs. Peloton had these. <em>But this was not enough.</em></p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎬</div>
+      <h3>Synchronisation (Sync) License</h3>
+      <p>Required whenever music is paired with video — advertisements, films, fitness classes, any visual content. <strong>No centralised clearinghouse exists.</strong> Every publisher negotiates individually. Each can say no. There is no blanket sync market.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚙️</div>
+      <h3>Fractional Rights Complexity</h3>
+      <p>Only 2% of songs in the lawsuit had a single owner. Most songs had multiple co-writers represented by <em>different</em> publishers. <strong>Every fractional rights holder must separately grant clearance.</strong> One refusal blocks the whole song.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎲</div>
+      <h3>Spontaneous Instructor Selection</h3>
+      <p>Peloton's instructors chose music in real-time during classes — creating a pre-clearance impossibility problem. You cannot clear songs that haven't been chosen yet. This operational model was fundamentally incompatible with sync licensing law.</p>
+    </div>
+  </div>
+
+  <div class="pullquote">
+    "Is the complexity of music licensing necessary? Or is it a structural feature that benefits rights holders by creating barriers to entry and leverage asymmetry?"
+    <cite>— Prof. Dr. Markus Rach, Lecture 10</cite>
+  </div>
+
+  <!-- Q4 -->
+  <div class="q-block">
+    <div class="q-prompt">⚡ Question 4 of 10 — Conceptual trap</div>
+    <div class="q-text">Peloton had valid performance licenses through ASCAP/BMI/SESAC. Why were these insufficient to protect them from the NMPA lawsuit?</div>
+    <div class="q-options" id="q4-opts">
+      <div class="q-opt" onclick="answer(4,'A',false)" data-id="q4-A">
+        <span class="opt-letter">A</span>
+        <span>Because ASCAP/BMI/SESAC don't actually cover popular artists — only independent musicians use these organisations.</span>
+      </div>
+      <div class="q-opt" onclick="answer(4,'B',false)" data-id="q4-B">
+        <span class="opt-letter">B</span>
+        <span>Because Peloton's performance licenses had expired before the lawsuit was filed.</span>
+      </div>
+      <div class="q-opt" onclick="answer(4,'C',true)" data-id="q4-C">
+        <span class="opt-letter">C</span>
+        <span>Because performance licenses cover the right to publicly play music, but sync licenses are a separate right — required specifically when music is paired with video. These are legally distinct, and ASCAP/BMI deals do not include sync rights.</span>
+      </div>
+      <div class="q-opt" onclick="answer(4,'D',false)" data-id="q4-D">
+        <span class="opt-letter">D</span>
+        <span>Because fitness classes are not considered "public" performances under US copyright law.</span>
+      </div>
+    </div>
+    <div class="q-reveal" id="q4-reveal">
+      <span class="q-result-tag" id="q4-tag"></span>
+      <strong>This is the foundational error Peloton made.</strong> Performance rights and synchronisation rights are legally distinct and separately held. A blanket ASCAP deal lets you play music at a venue or stream it as audio — it grants nothing when that music is embedded in a video recording. Peloton's classes were video content. Every song in every class required its own sync license, from its own publisher, negotiated individually. There is no shortcut.
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="q-block">
+    <div class="q-prompt">⚡ Question 5 of 10</div>
+    <div class="q-text">Peloton's instructors selected music spontaneously during live classes. What is the most accurate characterisation of this from a licensing perspective?</div>
+    <div class="q-options" id="q5-opts">
+      <div class="q-opt" onclick="answer(5,'A',false)" data-id="q5-A">
+        <span class="opt-letter">A</span>
+        <span>Spontaneous selection is a legal grey area — it is closer to a live performance than a sync and should attract different rules.</span>
+      </div>
+      <div class="q-opt" onclick="answer(5,'B',false)" data-id="q5-B">
+        <span class="opt-letter">B</span>
+        <span>It is operationally inconvenient but has no specific legal implications beyond the general licensing obligation.</span>
+      </div>
+      <div class="q-opt" onclick="answer(5,'C',true)" data-id="q5-C">
+        <span class="opt-letter">C</span>
+        <span>It represents a fundamental structural incompatibility — pre-clearance is required by law, but spontaneous selection makes pre-clearance impossible, meaning the business model itself was built on an illegal foundation.</span>
+      </div>
+      <div class="q-opt" onclick="answer(5,'D',false)" data-id="q5-D">
+        <span class="opt-letter">D</span>
+        <span>Spontaneous selection removes wilfulness — you cannot be wilfully infringing if you didn't plan the song choice in advance.</span>
+      </div>
+    </div>
+    <div class="q-reveal" id="q5-reveal">
+      <span class="q-result-tag" id="q5-tag"></span>
+      <strong>The operational model was the problem.</strong> Sync law requires clearance <em>before</em> use — that is non-negotiable. Peloton's real-time instructor model was structurally incompatible with that requirement. The correct response was to either (a) build a cleared library and restrict instructors to it, or (b) obtain blanket sync deals in advance. Instead, Peloton did neither and allowed an illegal model to scale for years. On wilfulness: courts assess whether the infringer <em>knew</em> licensing was required — not whether they knew which song would be played. Having partial licenses confirms they knew.
+    </div>
+  </div>
+
+  <button class="unlock-btn" id="unlock-4" onclick="unlockModule(4)" disabled>Continue to Power Analysis →</button>
+</section>
+
+<hr class="div">
+
+<!-- ══════ MODULE 4: POWER ══════ -->
+<div class="module-lock" id="lock-4"><div class="lock-msg">⬛ Module 4 locked — complete Module 3 first</div></div>
+
+<section class="module" id="mod-4">
+  <div class="sec-label">Module 04 — Power Dynamics</div>
+  <h2 class="sec-title">Who held <em>the leverage?</em></h2>
+  <p class="sec-intro">Apply the six-factor power framework from the lecture. This case is fundamentally about power asymmetry — one side understood their position, the other did not.</p>
+
+  <div class="power-grid">
+    <div class="power-side">
+      <h3>🎵 NMPA / Publishers</h3>
+      <div class="pbar"><div class="pbar-label"><span>Legal Position</span><span>95%</span></div><div class="pbar-track"><div class="pbar-fill fill-g" data-w="95"></div></div></div>
+      <div class="pbar"><div class="pbar-label"><span>Content Value</span><span>90%</span></div><div class="pbar-track"><div class="pbar-fill fill-g" data-w="90"></div></div></div>
+      <div class="pbar"><div class="pbar-label"><span>Financial Staying Power</span><span>80%</span></div><div class="pbar-track"><div class="pbar-fill fill-a" data-w="80"></div></div></div>
+      <div class="pbar"><div class="pbar-label"><span>BATNA Strength</span><span>88%</span></div><div class="pbar-track"><div class="pbar-fill fill-g" data-w="88"></div></div></div>
+      <div class="pbar"><div class="pbar-label"><span>Regulatory Position</span><span>92%</span></div><div class="pbar-track"><div class="pbar-fill fill-g" data-w="92"></div></div></div>
+      <div class="pbar"><div class="pbar-label"><span>Relationship Capital</span><span>75%</span></div><div class="pbar-track"><div class="pbar-fill fill-a" data-w="75"></div></div></div>
+    </div>
+    <div class="power-side">
+      <h3>🚴 Peloton</h3>
+      <div class="pbar"><div class="pbar-label"><span>Legal Position</span><span>15%</span></div><div class="pbar-track"><div class="pbar-fill fill-r" data-w="15"></div></div></div>
+      <div class="pbar"><div class="pbar-label"><span>Content Value</span><span>30%</span></div><div class="pbar-track"><div class="pbar-fill fill-r" data-w="30"></div></div></div>
+      <div class="pbar"><div class="pbar-label"><span>Financial Staying Power</span><span>45%</span></div><div class="pbar-track"><div class="pbar-fill fill-a" data-w="45"></div></div></div>
+      <div class="pbar"><div class="pbar-label"><span>BATNA Strength</span><span>25%</span></div><div class="pbar-track"><div class="pbar-fill fill-r" data-w="25"></div></div></div>
+      <div class="pbar"><div class="pbar-label"><span>Regulatory Position</span><span>10%</span></div><div class="pbar-track"><div class="pbar-fill fill-r" data-w="10"></div></div></div>
+      <div class="pbar"><div class="pbar-label"><span>Relationship Capital</span><span>35%</span></div><div class="pbar-track"><div class="pbar-fill fill-r" data-w="35"></div></div></div>
+    </div>
+  </div>
+
+  <div class="info-box" style="margin-bottom:1.5rem">
+    <h4>⚠️ Peloton's Only Structural Argument</h4>
+    <p>The court acknowledged that fitness music might be "interchangeable" — Peloton could theoretically operate with lesser-known or license-free tracks. This was Peloton's one argument for a stronger BATNA. But read the next question carefully before you accept this logic.</p>
+  </div>
+
+  <!-- Q6 — TRAP -->
+  <div class="q-block">
+    <div class="q-prompt">⚡ Question 6 of 10 — Classic trap</div>
+    <div class="q-text">The court noted that fitness music is "interchangeable" — Peloton could use royalty-free or lesser-known tracks instead of popular songs. Does this mean Peloton had a strong BATNA?</div>
+    <div class="q-options" id="q6-opts">
+      <div class="q-opt" onclick="answer(6,'A',false)" data-id="q6-A">
+        <span class="opt-letter">A</span>
+        <span>Yes — if music is interchangeable, publishers have no real leverage. Peloton could simply switch to royalty-free music and walk away.</span>
+      </div>
+      <div class="q-opt" onclick="answer(6,'B',true)" data-id="q6-B">
+        <span class="opt-letter">B</span>
+        <span>No — the court's "interchangeability" finding is a legal test, not a brand reality. Peloton's premium positioning at $2,000+ per bike demands popular, recognisable music. Switching to royalty-free tracks would destroy the brand proposition entirely.</span>
+      </div>
+      <div class="q-opt" onclick="answer(6,'C',false)" data-id="q6-C">
+        <span class="opt-letter">C</span>
+        <span>Partially — Peloton could have used royalty-free music for new classes while keeping popular music for its existing back catalogue.</span>
+      </div>
+      <div class="q-opt" onclick="answer(6,'D',false)" data-id="q6-D">
+        <span class="opt-letter">D</span>
+        <span>The question is irrelevant since the case was already in litigation — BATNA only matters before lawsuits are filed.</span>
+      </div>
+    </div>
+    <div class="q-reveal" id="q6-reveal">
+      <span class="q-result-tag" id="q6-tag"></span>
+      <strong>Brand is a BATNA constraint.</strong> The court's "interchangeability" statement addresses antitrust market definition — it is a legal test, not a business strategy assessment. In reality, Peloton's entire value proposition rested on a premium experience. Users complained loudly when popular songs were removed. A $2,000+ bike paired with stock workout music is not a Peloton — it is a generic exercise bike with a screen. Peloton's realistic BATNA was far weaker than the legal argument suggested. <em>This is the same logic as saying "Hermès could sell canvas bags instead of leather."</em>
+    </div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="q-block">
+    <div class="q-prompt">⚡ Question 7 of 10 — Compare &amp; contrast</div>
+    <div class="q-text">Compare Peloton v. NMPA with the UMG v. TikTok standoff from the previous lecture. What is the most significant structural difference between the two power dynamics?</div>
+    <div class="q-options" id="q7-opts">
+      <div class="q-opt" onclick="answer(7,'A',false)" data-id="q7-A">
+        <span class="opt-letter">A</span>
+        <span>In the TikTok case, both sides had roughly equal power. In the Peloton case, publishers were slightly stronger.</span>
+      </div>
+      <div class="q-opt" onclick="answer(7,'B',false)" data-id="q7-B">
+        <span class="opt-letter">B</span>
+        <span>The cases are fundamentally similar — both involve music publishers extracting value from a platform that underestimated them.</span>
+      </div>
+      <div class="q-opt" onclick="answer(7,'C',true)" data-id="q7-C">
+        <span class="opt-letter">C</span>
+        <span>In UMG v. TikTok, both sides understood the power balance and engaged in strategic negotiation. In Peloton v. NMPA, Peloton never understood its position — it built a business on an illegal model, ignored the imbalance, and was forced into litigation rather than negotiating proactively.</span>
+      </div>
+      <div class="q-opt" onclick="answer(7,'D',false)" data-id="q7-D">
+        <span class="opt-letter">D</span>
+        <span>The Peloton case was actually a stronger negotiating position for the platform because fitness content does not depend on specific songs the way TikTok depends on trending music.</span>
+      </div>
+    </div>
+    <div class="q-reveal" id="q7-reveal">
+      <span class="q-result-tag" id="q7-tag"></span>
+      <strong>Awareness of power is itself a form of power.</strong> TikTok understood the dynamic — they simply miscalculated UMG's willingness to walk. Peloton never understood the dynamic at all. They built an entire operating model that violated sync law, scaled it for years, and then tried to litigate their way out instead of negotiating their way in. The lesson: both cases confirm that understanding your power position <em>before</em> you act is the prerequisite for any strategic outcome. Peloton had no strategy — only a lawsuit to respond to.
+    </div>
+  </div>
+
+  <button class="unlock-btn" id="unlock-5" onclick="unlockModule(5)" disabled>Continue to BATNA / ZOPA Lab →</button>
+</section>
+
+<hr class="div">
+
+<!-- ══════ MODULE 5: BATNA / ZOPA ══════ -->
+<div class="module-lock" id="lock-5"><div class="lock-msg">⬛ Module 5 locked — complete Module 4 first</div></div>
+
+<section class="module" id="mod-5">
+  <div class="sec-label">Module 05 — BATNA &amp; ZOPA Analysis</div>
+  <h2 class="sec-title">Where did the <em>deal space</em> sit?</h2>
+  <p class="sec-intro">Apply your negotiation frameworks to the actual numbers. Identify where each party's walk-away position sat, whether a ZOPA existed, and why the settlement fell where it did.</p>
+
+  <div class="two-col">
+    <div class="info-box">
+      <h4>📌 Publishers' BATNA</h4>
+      <p><strong>Litigation itself.</strong> With $150,000 per song in statutory damages, clear evidence of unlicensed use, and catalogue covering Rihanna to Bruno Mars — the publishers had an exceptionally strong legal alternative to any deal. Their BATNA was essentially: <em>go to trial and likely win big.</em></p>
+    </div>
+    <div class="info-box">
+      <h4>📌 Peloton's BATNA</h4>
+      <p>Theoretically: switch to royalty-free music. Practically: destroy the brand, trigger user exodus, collapse the premium price point. <strong>Peloton's realistic BATNA was proactively negotiating individual publisher deals at market rate</strong> — which they had failed to do. Their actual BATNA at lawsuit stage was: settle quickly or face trial catastrophe.</p>
+    </div>
+  </div>
+
+  <div class="zopa-wrap">
+    <div class="zopa-title">ZOPA Visualisation — Where the deal space existed</div>
+    <div style="position:relative;height:130px;margin:0 20px 1rem">
+      <!-- Scale labels -->
+      <div style="position:absolute;bottom:0;left:0;right:0;display:flex;justify-content:space-between;font-family:var(--mono);font-size:.58rem;color:var(--t3)">
+        <span>$0</span><span>$50M</span><span>$100M</span><span>$150M</span><span>$200M</span><span>$250M</span><span>$300M+</span>
+      </div>
+      <!-- Base track -->
+      <div style="position:absolute;bottom:28px;left:0;right:0;height:4px;background:var(--surf3);border-radius:99px"></div>
+      <!-- Publishers range: floor ~$35M (11.7%), ceiling $300M (100%) -->
+      <div style="position:absolute;bottom:28px;left:0;right:0%;height:4px">
+        <div style="position:absolute;left:11.7%;right:0;height:100%;background:rgba(62,207,142,.25);border-radius:99px"></div>
+      </div>
+      <!-- Peloton range: floor $0 (0%), ceiling ~$70M (23%) -->
+      <div style="position:absolute;bottom:28px;left:0;right:77%;height:4px;background:rgba(232,65,90,.25);border-radius:99px"></div>
+      <!-- ZOPA overlap ~$35M–$70M -->
+      <div style="position:absolute;bottom:24px;left:11.7%;right:77%;height:12px;background:var(--amber);opacity:.6;border-radius:3px"></div>
+      <!-- Marker: Publishers floor -->
+      <div style="position:absolute;bottom:34px;left:11.7%;width:1px;height:20px;background:var(--green)"></div>
+      <div style="position:absolute;bottom:56px;left:11.7%;transform:translateX(-50%);font-family:var(--mono);font-size:.58rem;color:var(--green);white-space:nowrap">Publishers' floor<br>~$30–60M</div>
+      <!-- Marker: Peloton ceiling -->
+      <div style="position:absolute;bottom:34px;left:23%;width:1px;height:20px;background:var(--red)"></div>
+      <div style="position:absolute;top:0;left:23%;transform:translateX(-50%);font-family:var(--mono);font-size:.58rem;color:var(--red);white-space:nowrap;text-align:center">Peloton's ceiling<br>~$60–80M</div>
+      <!-- Actual settlement zone -->
+      <div style="position:absolute;bottom:14px;left:14%;right:75%;font-family:var(--mono);font-size:.58rem;color:var(--amber);text-align:center">ZOPA<br>zone</div>
+    </div>
+    <div class="zopa-legend" style="margin-top:1.5rem">
+      <div class="zl-item"><div class="zl-dot" style="background:var(--green);opacity:.7"></div>Publishers' acceptable range</div>
+      <div class="zl-item"><div class="zl-dot" style="background:var(--red);opacity:.7"></div>Peloton's acceptable range</div>
+      <div class="zl-item"><div class="zl-dot" style="background:var(--amber);opacity:.7"></div>Overlap — ZOPA</div>
+    </div>
+  </div>
+
+  <!-- Q8 — TRAP -->
+  <div class="q-block">
+    <div class="q-prompt">⚡ Question 8 of 10 — Emotional trap</div>
+    <div class="q-text">The publishers originally claimed $300M. The reported settlement costs were $49.3M. Does this prove the publishers were being unreasonably greedy with their initial claim?</div>
+    <div class="q-options" id="q8-opts">
+      <div class="q-opt" onclick="answer(8,'A',false)" data-id="q8-A">
+        <span class="opt-letter">A</span>
+        <span>Yes — a gap of $250M between claim and settlement shows the claim was exaggerated and designed to intimidate rather than reflect genuine damages.</span>
+      </div>
+      <div class="q-opt" onclick="answer(8,'B',false)" data-id="q8-B">
+        <span class="opt-letter">B</span>
+        <span>Yes — any claim more than 5× the likely settlement is bad-faith litigation.</span>
+      </div>
+      <div class="q-opt" onclick="answer(8,'C',true)" data-id="q8-C">
+        <span class="opt-letter">C</span>
+        <span>No — the $300M figure reflects a legally valid calculation of statutory damages for wilful infringement at scale. Claiming maximum statutory damages is a standard and legitimate opening position. The settlement figure includes unknowns (legal fees, future licensing, collaboration value). The gap reflects negotiation dynamics, not dishonesty.</span>
+      </div>
+      <div class="q-opt" onclick="answer(8,'D',false)" data-id="q8-D">
+        <span class="opt-letter">D</span>
+        <span>No — publishers should always claim the maximum because courts will correct inflated claims anyway.</span>
+      </div>
+    </div>
+    <div class="q-reveal" id="q8-reveal">
+      <span class="q-result-tag" id="q8-tag"></span>
+      <strong>The emotional reaction to "greedy publishers" is a trap.</strong> Statutory damages exist precisely to deter wilful infringement at scale — Congress set the numbers deliberately high. With 2,468 songs and evidence of knowing infringement, $300M was the arithmetically correct maximum claim, not an invented number. The settlement reflects (a) litigation risk, (b) the value of a future licensing relationship, (c) confidential terms we don't fully know, and (d) legal fees bundled in reported costs. Dismissing the claim as "greedy" misunderstands how copyright law is designed to work.
+    </div>
+  </div>
+
+  <!-- Q9 -->
+  <div class="q-block">
+    <div class="q-prompt">⚡ Question 9 of 10</div>
+    <div class="q-text">Post-settlement, Peloton launched premium "Artist Series" classes featuring Beyoncé, The Beatles, and Ed Sheeran — and used these to price discriminate. What does this reveal about the true cost-benefit logic of the settlement?</div>
+    <div class="q-options" id="q9-opts">
+      <div class="q-opt" onclick="answer(9,'A',false)" data-id="q9-A">
+        <span class="opt-letter">A</span>
+        <span>It shows the settlement was too low — publishers should have demanded revenue sharing in perpetuity.</span>
+      </div>
+      <div class="q-opt" onclick="answer(9,'B',true)" data-id="q9-B">
+        <span class="opt-letter">B</span>
+        <span>The settlement transformed a liability into a strategic asset. Proper licensing didn't just remove legal risk — it enabled Peloton to build premium content that further justified its price premium, turning a court-enforced cost into a competitive moat.</span>
+      </div>
+      <div class="q-opt" onclick="answer(9,'C',false)" data-id="q9-C">
+        <span class="opt-letter">C</span>
+        <span>The Artist Series was coincidental — Peloton would have launched it regardless of the litigation.</span>
+      </div>
+      <div class="q-opt" onclick="answer(9,'D',false)" data-id="q9-D">
+        <span class="opt-letter">D</span>
+        <span>It proves Peloton was right not to settle earlier — the post-settlement relationship was worth more than any licensing deal would have been.</span>
+      </div>
+    </div>
+    <div class="q-reveal" id="q9-reveal">
+      <span class="q-result-tag" id="q9-tag"></span>
+      <strong>This is the strategic twist in the case.</strong> What began as pure legal liability became, post-settlement, a structural advantage. The Artist Series — enabled by proper sync licenses — allowed Peloton to create exclusive, branded workout experiences with globally recognised artists. This is price discrimination and brand premiumisation in action. The deeper lesson: <em>complying with licensing law from day one would have given Peloton this same capability years earlier, at a fraction of the eventual cost.</em>
+    </div>
+  </div>
+
+  <button class="unlock-btn" id="unlock-6" onclick="unlockModule(6)" disabled>Deliver Your Verdict →</button>
+</section>
+
+<hr class="div">
+
+<!-- ══════ MODULE 6: VERDICT ══════ -->
+<div class="module-lock" id="lock-6"><div class="lock-msg">⬛ Module 6 locked — complete Module 5 first</div></div>
+
+<section class="module" id="mod-6">
+  <div class="sec-label">Module 06 — Final Verdict &amp; Score</div>
+  <h2 class="sec-title">The Analyst's <em>Verdict</em></h2>
+
+  <!-- Q10 — Final synthesis -->
+  <div class="q-block">
+    <div class="q-prompt">⚡ Question 10 of 10 — Synthesis</div>
+    <div class="q-text">What is the single most important strategic lesson from Peloton v. NMPA for a licensing professional?</div>
+    <div class="q-options" id="q10-opts">
+      <div class="q-opt" onclick="answer(10,'A',false)" data-id="q10-A">
+        <span class="opt-letter">A</span>
+        <span>Always negotiate the lowest possible licensing fees — the cost savings justify the legal risk of minimal compliance.</span>
+      </div>
+      <div class="q-opt" onclick="answer(10,'B',false)" data-id="q10-B">
+        <span class="opt-letter">B</span>
+        <span>Antitrust law can be used offensively to neutralise rights holders who coordinate their licensing demands.</span>
+      </div>
+      <div class="q-opt" onclick="answer(10,'C',false)" data-id="q10-C">
+        <span class="opt-letter">C</span>
+        <span>Premium brands can absorb licensing litigation costs as a cost of doing business — the fees are proportionate to revenue.</span>
+      </div>
+      <div class="q-opt" onclick="answer(10,'D',true)" data-id="q10-D">
+        <span class="opt-letter">D</span>
+        <span>Understand the full licensing architecture of your business model <em>before</em> you scale it. Leverage is built before the negotiation begins — not improvised in a courtroom after the damage is done.</span>
+      </div>
+    </div>
+    <div class="q-reveal" id="q10-reveal">
+      <span class="q-result-tag" id="q10-tag"></span>
+      <strong>The deepest lesson in this case is not about copyright — it is about preparation.</strong> Peloton's mistake was not that they got sued. It was that they built and scaled an entire business model without understanding the legal architecture it depended on. Had they consulted a licensing attorney in 2012, they could have built a cleared music library, negotiated proactively, and launched Artist Series classes from year one. Every dollar of the $49.3M in reported costs, every reputational bruise, every moment of lost product development focus — all of it was the price of not doing the licensing homework upfront.
+    </div>
+  </div>
+
+  <!-- SCORE DISPLAY -->
+  <div class="verdict-box fade-in" id="verdict-box" style="display:none">
+    <div class="verdict-score-ring" id="score-ring">
+      <span class="verdict-score-num" id="final-score-num">0</span>
+      <span class="verdict-score-max">out of 10</span>
+    </div>
+    <div class="verdict-title" id="verdict-title">—</div>
+    <p class="verdict-desc" id="verdict-desc">—</p>
+
+    <div class="breakdown-grid" id="breakdown-grid"></div>
+
+    <div style="text-align:left">
+      <div class="sec-label" style="margin-bottom:.8rem">Case Conclusions — What the analysis tells us</div>
+
+      <div class="compare-row">
+        <div class="compare-card">
+          <h4>vs. UMG / TikTok</h4>
+          <p>UMG understood its leverage and deployed it strategically. Peloton never understood the legal landscape it operated in. Both cases are power stories — but one was strategic theatre; the other was a preventable catastrophe.</p>
+        </div>
+        <div class="compare-card">
+          <h4>The $49.3M lesson</h4>
+          <p>Proper sync licensing from day one would have cost a fraction of litigation. The "Artist Series" that Peloton eventually launched could have been their opening gambit. Legal compliance was never a cost — it was a delayed competitive asset.</p>
+        </div>
+      </div>
+
+      <ul class="learning-list">
+        <li>Sync licenses and performance licenses are legally distinct — having one does not provide the other. Know the full rights architecture of your content model before you build.</li>
+        <li>Partial compliance with a legal requirement is not a defence. It may be treated as evidence that you knew the requirement existed, making remaining violations wilful.</li>
+        <li>Statutory damages exist to deter wilful infringement at scale — $150,000 per work is not an opening offer. It is the law.</li>
+        <li>A company's BATNA is constrained by its brand positioning. The court's legal finding of "interchangeable music" was irrelevant to Peloton's real strategic alternatives.</li>
+        <li>Leverage is built before the negotiation begins. Peloton arrived at the table with a lawsuit, no BATNA, and a counterclaim that failed. That is not a negotiating position — it is damage control.</li>
+        <li>Post-settlement, the relationship became collaborative and valuable. That value was always available — it just required doing the licensing work first.</li>
+      </ul>
+
+      <div style="margin-top:2.5rem;padding:1.5rem;background:var(--red-d);border:1px solid var(--red-b);border-radius:6px">
+        <div class="sec-label" style="margin-bottom:.5rem">Your Assignment 2 Connection</div>
+        <p style="font-size:.9rem;line-height:1.75;color:var(--t2)">For Aurora Pictures: every licensing decision on Film 1 must be analysed through the power framework you have applied here. What is your sync architecture? What rights do you hold vs. what must you clear? What is your BATNA before you enter any platform negotiation? Build leverage before the table — not at it.</p>
+      </div>
+    </div>
+
+    <!-- RESOURCES -->
+    <div style="margin-top:3rem;text-align:left">
+      <div class="sec-label" style="margin-bottom:1rem">Evidence Room — Primary Sources</div>
+      <div class="res-grid">
+        <a class="res-card" href="https://jolt.law.harvard.edu/digest/the-workout-playlists-are-back-peloton-settles-with-the-national-music-publishers-association-over-copyright-infringement-claim" target="_blank">
+          <span class="res-type rt-academic">Academic</span>
+          <div class="res-info"><h4>Harvard JOLT — "The Workout Playlists Are Back"</h4><p>Harvard Journal of Law &amp; Technology digest on the settlement, the sync licensing structure, and what the case means for streaming content providers.</p></div>
+        </a>
+        <a class="res-card" href="https://www.courtlistener.com/docket/14809968/downtown-music-publishing-llc-v-peloton-interactive-inc/" target="_blank">
+          <span class="res-type rt-legal">Legal</span>
+          <div class="res-info"><h4>CourtListener — Full Case Docket S.D.N.Y. 1:19-cv-02426</h4><p>All public filings: original complaint, amended complaint, Peloton's counterclaims, and Judge Cote's dismissal opinion.</p></div>
+        </a>
+        <a class="res-card" href="https://www.hollywoodreporter.com/business/business-news/peloton-reports-49-million-legal-costs-settlement-music-publishers-1293634/" target="_blank">
+          <span class="res-type rt-media">Media</span>
+          <div class="res-info"><h4>Hollywood Reporter — Peloton Reports $49M in Legal Costs</h4><p>Coverage of Peloton's earnings disclosure revealing $49.3M in litigation and settlement costs after the NMPA deal.</p></div>
+        </a>
+        <a class="res-card" href="https://www.loeb.com/en/insights/publications/2020/01/downtown-music-publishing-llc-v-peloton-interactive-inc" target="_blank">
+          <span class="res-type rt-legal">Legal</span>
+          <div class="res-info"><h4>Loeb &amp; Loeb — Counterclaim Dismissal Analysis</h4><p>Legal breakdown of Judge Cote's January 2020 ruling dismissing Peloton's Sherman Act and tortious interference counterclaims.</p></div>
+        </a>
+        <a class="res-card" href="https://www.masslawblog.com/antitrust/copyright-infringement-peloton-punches-back-weakly-with-antitrust/" target="_blank">
+          <span class="res-type rt-legal">Legal</span>
+          <div class="res-info"><h4>Mass Law Blog — Peloton's Antitrust Counterclaim Explained</h4><p>Plain-language analysis of the hub-and-spoke conspiracy allegation, why it was legally weak, and what it reveals about Peloton's negotiating position.</p></div>
+        </a>
+        <a class="res-card" href="https://www.prnewswire.com/news-releases/nmpa-and-peloton-announce-settlement-of-litigation-joint-collaboration-agreement-301012233.html" target="_blank">
+          <span class="res-type rt-media">Primary Source</span>
+          <div class="res-info"><h4>PRNewswire — Official Settlement Announcement</h4><p>The joint NMPA–Peloton press release announcing the settlement and collaboration agreement, February 27, 2020. Includes statements from both sides.</p></div>
+        </a>
+        <a class="res-card" href="https://variety.com/2020/digital/news/peloton-settles-music-publishers-lawsuit-1203517495/" target="_blank">
+          <span class="res-type rt-media">Media</span>
+          <div class="res-info"><h4>Variety — Peloton Settles Music Publishers' Lawsuit</h4><p>Variety's coverage of the settlement, including the list of all 14 plaintiff publishers and background on the financial terms.</p></div>
+        </a>
+        <a class="res-card" href="https://theclipout.com/pelotons-extraordinary-music-licensing-journey-not-always-a-smooth-road/" target="_blank">
+          <span class="res-type rt-media">Industry</span>
+          <div class="res-info"><h4>The Clip Out — Peloton's Full Music Licensing Journey</h4><p>Deep-dive from a Peloton community publication covering the full arc: pre-lawsuit struggles, the crisis, the settlement, and the Artist Series era.</p></div>
+        </a>
+        <a class="res-card" href="https://www.pon.harvard.edu/daily/negotiation-skills-daily/types-of-power-in-negotiation/" target="_blank">
+          <span class="res-type rt-academic">Framework</span>
+          <div class="res-info"><h4>Harvard PON — Types of Power in Negotiation</h4><p>The lecture reference: objective vs. perceived power, how each type applies, and how to deploy them strategically at the negotiating table.</p></div>
+        </a>
+        <a class="res-card" href="https://www.cbsnews.com/news/peloton-lawsuit-fitness-company-sued-for-stealing-music/" target="_blank">
+          <span class="res-type rt-media">Media</span>
+          <div class="res-info"><h4>CBS News — Peloton Sued for $150M (Original Filing)</h4><p>Breaking news coverage from March 2019 when the lawsuit was filed, including the NMPA's statement and Peloton's initial response.</p></div>
+        </a>
+      </div>
+    </div>
+
+  </div><!-- end verdict-box -->
+</section>
+
+<hr class="div">
+<footer>
+  <em>CRI406</em> · Global Licensing / Distribution Agreements · Prof. Dr. Markus Rach
+</footer>
+
+</main>
+
+<script>
+// ── STATE ──
+const scores = {};
+const correctMap = {1:'B',2:'C',3:'B',4:'C',5:'C',6:'B',7:'C',8:'C',9:'B',10:'D'};
+const moduleUnlocked = {0:true};
+let totalScore = 0;
+
+// ── PROGRESS BAR ──
+window.addEventListener('scroll',()=>{
+  const pct = (scrollY/(document.body.scrollHeight-innerHeight))*100;
+  document.getElementById('prog').style.width = pct+'%';
+});
+
+// ── SCROLL TO MODULE ──
+function scrollTo(id){ document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'}); }
+
+// ── UNLOCK MODULE ──
+function unlockModule(n){
+  const mod = document.getElementById('mod-'+n);
+  const lock = document.getElementById('lock-'+n);
+  if(mod){ mod.classList.add('unlocked'); mod.style.display='block'; }
+  if(lock){ lock.style.display='none'; }
+  moduleUnlocked[n] = true;
+  updateDots();
+  setTimeout(()=>{ document.getElementById('mod-'+n)?.scrollIntoView({behavior:'smooth',block:'start'}); },100);
+  // Animate power bars if module 4
+  if(n===4){ setTimeout(animateBars, 600); }
+}
+
+// ── DOT INDICATORS ──
+function updateDots(){
+  const dots = document.querySelectorAll('.mod-dot');
+  [1,2,3,4,5,6].forEach((i,idx)=>{
+    dots[idx].className = 'mod-dot';
+    if(moduleUnlocked[i]) dots[idx].classList.add('done');
+  });
+}
+
+// ── ANSWER ──
+function answer(qNum, letter, isCorrect){
+  if(scores[qNum] !== undefined) return; // already answered
+  scores[qNum] = isCorrect ? 1 : 0;
+  totalScore = Object.values(scores).reduce((a,b)=>a+b,0);
+
+  // Update header score
+  document.getElementById('score-display').textContent = totalScore+' / 10';
+
+  // Style options
+  const opts = document.querySelectorAll(`#q${qNum}-opts .q-opt`);
+  opts.forEach(opt=>{
+    opt.classList.add('disabled');
+    const l = opt.getAttribute('data-id').replace(`q${qNum}-`,'');
+    if(l === correctMap[qNum]) opt.classList.add('correct');
+    else if(l === letter && !isCorrect) opt.classList.add('wrong');
+  });
+
+  // Show reveal
+  const reveal = document.getElementById(`q${qNum}-reveal`);
+  const tag = document.getElementById(`q${qNum}-tag`);
+  if(reveal){ reveal.classList.add('show'); }
+  if(tag){
+    tag.textContent = isCorrect ? '✓ Correct' : '✗ Incorrect — here is why:';
+    tag.className = 'q-result-tag '+(isCorrect?'tag-correct':'tag-wrong');
+  }
+
+  // Check if module can unlock
+  checkModuleComplete(qNum);
+  updateProgress();
+}
+
+// ── CHECK MODULE COMPLETE ──
+function checkModuleComplete(qNum){
+  // Map: which unlock button to enable once these questions are all answered
+  const moduleQMap = {
+    2:[1,2],   // questions 1+2 answered → unlock module 2 button
+    3:[3],     // question 3 answered → unlock module 3 button
+    4:[4,5],   // questions 4+5 answered → unlock module 4 button
+    5:[6,7],   // questions 6+7 answered → unlock module 5 button
+    6:[8,9],   // questions 8+9 answered → unlock module 6 button
+  };
+  for(const [unlockN, qs] of Object.entries(moduleQMap)){
+    if(qs.includes(qNum)){
+      // Enable as soon as ALL questions in this group are answered (right OR wrong)
+      const allAnswered = qs.every(q => scores[q] !== undefined);
+      if(allAnswered){
+        const btn = document.getElementById('unlock-'+unlockN);
+        if(btn){ btn.disabled = false; }
+      }
+    }
+  }
+  // Final synthesis question — show verdict automatically
+  if(qNum === 10){ setTimeout(showVerdict, 600); }
+}
+
+// ── SHOW VERDICT ──
+function showVerdict(){
+  const vbox = document.getElementById('verdict-box');
+  vbox.style.display = 'block';
+  vbox.classList.add('fade-in');
+
+  const s = totalScore;
+  document.getElementById('final-score-num').textContent = s;
+
+  // Ring colour
+  const ring = document.getElementById('score-ring');
+  let col, title, desc;
+  if(s>=9){
+    col='var(--green)';title='Outstanding Analyst';
+    desc='You demonstrated a comprehensive understanding of sync licensing architecture, power dynamics, BATNA constraints, and the strategic failures that led to Peloton\'s crisis. You avoided the conceptual traps and showed genuine analytical depth. You are ready to advise on real licensing negotiations.';
+  } else if(s>=7){
+    col='var(--blue)';title='Strong Understanding';
+    desc='You grasped the core mechanics and avoided most traps. A few analytical nuances — particularly around the brand BATNA constraint and the wilfulness implications of partial licensing — deserve a second look. Solid foundation for Assignment 2.';
+  } else if(s>=5){
+    col='var(--amber)';title='Developing Analyst';
+    desc='You understood the broad narrative but fell into some of the conceptual traps — particularly around partial compliance, the Sherman Act counterclaim, and what BATNA really means for a premium brand. Review the reveal explanations before applying this framework to Aurora Pictures.';
+  } else {
+    col='var(--red)';title='Back to the Brief';
+    desc='Several core concepts need revisiting: the distinction between sync and performance licenses, the wilfulness doctrine, how brand positioning constrains BATNA, and what statutory damages are designed to do. Revisit Modules 1–3 before attempting Assignment 2.';
+  }
+
+  ring.style.border = `3px solid ${col}`;
+  ring.style.boxShadow = `0 0 24px ${col}40`;
+  document.getElementById('final-score-num').style.color = col;
+  document.getElementById('verdict-title').textContent = title;
+  document.getElementById('verdict-desc').textContent = desc;
+
+  // Breakdown
+  const modules = [
+    {label:'Module 1 — Overview', qs:[1,2]},
+    {label:'Module 2 — Timeline', qs:[3]},
+    {label:'Module 3 — Licensing', qs:[4,5]},
+    {label:'Module 4 — Power', qs:[6,7]},
+    {label:'Module 5 — BATNA/ZOPA', qs:[8,9]},
+    {label:'Module 6 — Synthesis', qs:[10]},
+  ];
+  const grid = document.getElementById('breakdown-grid');
+  grid.innerHTML = modules.map(m=>{
+    const got = m.qs.filter(q=>scores[q]===1).length;
+    const tot = m.qs.length;
+    const c = got===tot?'var(--green)':got>0?'var(--amber)':'var(--red)';
+    return `<div class="breakdown-item"><span class="bi-n" style="color:${c}">${got}/${tot}</span><span class="bi-l">${m.label}</span></div>`;
+  }).join('');
+
+  setTimeout(()=>vbox.scrollIntoView({behavior:'smooth',block:'start'}),300);
+  updateProgress();
+}
+
+// ── ANIMATE POWER BARS ──
+function animateBars(){
+  document.querySelectorAll('.pbar-fill').forEach(el=>{
+    const w = el.getAttribute('data-w');
+    if(w) el.style.width = w+'%';
+  });
+}
+
+// ── PROGRESS UPDATE ──
+function updateProgress(){
+  const done = Object.keys(scores).length;
+  document.getElementById('prog').style.width = (done/10*100)+'%';
+}
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded',()=>{
+  // Show lock-1 initially
+  document.getElementById('lock-1').classList.add('show-lock');
+  [2,3,4,5,6].forEach(i=>{
+    const l = document.getElementById('lock-'+i);
+    if(l) l.classList.add('show-lock');
+  });
+});
+</script>
+</body>
+</html>
